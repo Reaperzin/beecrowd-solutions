@@ -1,13 +1,6 @@
-"""
-generate_readme.py
-Varre as pastas de categorias do Beecrowd, identifica os arquivos de código
-e regera o README.md com estatísticas e uma tabela organizada.
-"""
-
 import os
 import re
 
-# Mapeamento de extensões para Linguagens e Badges/Nomes formatados
 EXTENSIONS = {
     ".c": "C",
     ".cpp": "C++",
@@ -22,22 +15,8 @@ EXTENSIONS = {
     ".sql": "SQL"
 }
 
-# Categorias na ordem padrão do Beecrowd
-CATEGORIES = [
-    "1-Iniciante",
-    "2-Ad-Hoc",
-    "3-Strings",
-    "4-Estruturas-e-Bibliotecas",
-    "5-Matematica",
-    "6-Paradigmas",
-    "7-Grafos",
-    "8-Geometria-Computacional",
-    "9-SQL"
-]
-
 def scan_solutions(base_dir="."):
     solutions = []
-    
     for item in os.listdir(base_dir):
         cat_path = os.path.join(base_dir, item)
         if os.path.isdir(cat_path) and not item.startswith("."):
@@ -68,28 +47,27 @@ def generate_readme(solutions, output_file="README.md"):
 
     content = []
     content.append("# 🐝 Beecrowd Solutions\n")
-    content.append("> Repositório automatizado contendo soluções dos problemas da plataforma [beecrowd](https://www.beecrowd.com.br/).\n")
+    content.append("> Repositório contendo soluções dos problemas da plataforma [beecrowd](https://judge.beecrowd.com/).\n")
     
-    # Resumo
     content.append("## 📊 Estatísticas Gerais\n")
     content.append(f"- **Total de Problemas Resolvidos:** `{total}`\n")
     
-    content.append("### 💻 Linguagens")
-    for lang, count in sorted(lang_count.items(), key=lambda x: x[1], reverse=True):
-        content.append(f"- **{lang}:** `{count}`")
-    content.append("")
+    if lang_count:
+        content.append("### 💻 Linguagens")
+        for lang, count in sorted(lang_count.items(), key=lambda x: x[1], reverse=True):
+            content.append(f"- **{lang}:** `{count}`")
+        content.append("")
     
-    content.append("### 📁 Categorias")
-    for cat in sorted(cat_count.keys()):
-        content.append(f"- **{cat}:** `{cat_count[cat]}`")
-    content.append("")
+    if cat_count:
+        content.append("### 📁 Categorias")
+        for cat in sorted(cat_count.keys()):
+            content.append(f"- **{cat}:** `{cat_count[cat]}`")
+        content.append("")
 
-    # Tabela
     content.append("## 📝 Tabela de Soluções\n")
     content.append("| ID | Categoria | Linguagem | Solução | Link Beecrowd |")
     content.append("|:--:|:----------|:---------:|:-------:|:-------------:|")
     
-    # Ordenar por ID numérico se possível
     def sort_key(s):
         try:
             return (int(s["id"]), s["language"])
@@ -107,7 +85,7 @@ def generate_readme(solutions, output_file="README.md"):
 
     with open(output_file, "w", encoding="utf-8") as f:
         f.write("\n".join(content))
-    print(f"Sucesso: {output_file} gerado com {total} soluções encontradas!")
+    print(f"Sucesso: README.md atualizado com {total} solucoes!")
 
 if __name__ == "__main__":
     sols = scan_solutions()

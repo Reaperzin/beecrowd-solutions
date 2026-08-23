@@ -17,23 +17,38 @@ EXTENSIONS = {
 
 def scan_solutions(base_dir="."):
     solutions = []
-    for item in os.listdir(base_dir):
-        cat_path = os.path.join(base_dir, item)
-        if os.path.isdir(cat_path) and not item.startswith("."):
-            for file in sorted(os.listdir(cat_path)):
-                if file.startswith("."):
-                    continue
-                name, ext = os.path.splitext(file)
-                if ext.lower() in EXTENSIONS:
-                    match = re.match(r"(\d+)", name)
-                    prob_id = match.group(1) if match else name
-                    solutions.append({
-                        "id": prob_id,
-                        "category": item,
-                        "language": EXTENSIONS[ext.lower()],
-                        "filename": file,
-                        "rel_path": f"{item}/{file}"
-                    })
+    
+    # Percorre todas as pastas e subpastas recursivamente
+    for root, dirs, files in os.walk(base_dir):
+        # Ignora a pasta oculta do git
+        if ".git" in root:
+            continue
+            
+        rel_dir = os.path.relpath(root, base_dir)
+        if rel_dir == ".":
+            continue
+            
+        parts = rel_dir.split(os.sep)
+        category = parts[0]
+        
+        for file in sorted(files):
+            if file.startswith("."):
+                continue
+            name, ext = os.path.splitext(file)
+            if ext.lower() in EXTENSIONS:
+                # Tenta pegar o ID numérico pelo nome do arquivo ou pelo nome da subpasta
+                match = re.search(r"(\d+)", file) or (re.search(r"(\d+)", parts[1]) if len(parts) > 1 else None)
+                prob_id = match.group(1) if match else name
+                
+                full_rel_path = os.path.join(rel_dir, file).replace("\\", "/")
+                
+                solutions.append({
+                    "id": prob_id,
+                    "category": category,
+                    "language": EXTENSIONS[ext.lower()],
+                    "filename": file,
+                    "rel_path": full_rel_path
+                })
     return solutions
 
 def generate_readme(solutions, output_file="README.md"):

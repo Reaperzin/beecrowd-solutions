@@ -74,12 +74,11 @@ def generate_readme(problems, output_file="README.md"):
     total_beecrowd = sum(CATEGORY_TOTALS.values())
 
     content = []
-    content.append("# 🐝 Beecrowd Solutions\n")
+    content.append("#  Beecrowd Solutions\n")
     content.append("> Repositório pessoal com soluções dos exercícios da plataforma [beecrowd](https://judge.beecrowd.com/).\n")
     
     # Seção de Estatísticas por Tipo
-    content.append("## 📊 Progresso por Categoria\n")
-    content.append(f"**Total Geral Resolvido:** `{total_unique_solved} / {total_beecrowd}`\n")
+    content.append("##  Progresso por Categoria\n")
     
     # Ordem das categorias
     all_categories = sorted(list(set(list(CATEGORY_TOTALS.keys()) + list(solved_by_cat.keys()))))
@@ -88,17 +87,16 @@ def generate_readme(problems, output_file="README.md"):
         solved = solved_by_cat.get(cat, 0)
         total = CATEGORY_TOTALS.get(cat, "?")
         
-        # Nome amigável removendo o prefixo numérico (ex: "1-Iniciante" -> "Iniciante")
+        # Nome amigável removendo o prefixo numérico (ex: "1-Iniciante" -> "Iniciante") 
         cat_name = cat.split("-", 1)[1] if "-" in cat else cat
         
         if isinstance(total, int) and total > 0:
-            porcentagem = (solved / total) * 100
-            content.append(f"- **{cat_name}:** `{solved}/{total}` ({porcentagem:.1f}%)")
+            content.append(f"- **{cat_name}:** `{solved}/{total}`")
         else:
             content.append(f"- **{cat_name}:** `{solved}` resolvidos")
             
-    content.append("\n## 📝 Tabela de Soluções\n")
-    content.append("| Problema | Categoria | Soluções por Linguagem | Link Beecrowd |")
+    content.append("\n##  Tabela de Soluções\n")
+    content.append("| Problema | Categoria |  Linguagem | Link Beecrowd |")
     content.append("|:--------:|:----------|:-----------------------|:-------------:|")
     
     # Ordena os problemas por ID
@@ -113,7 +111,7 @@ def generate_readme(problems, output_file="README.md"):
         cat_name = category.split("-", 1)[1] if "-" in category else category
         
         # Monta os links das linguagens: [C](caminho/1000.c) | [Java](caminho/HelloWorld.java)
-        lang_links = " \\| ".join([f"[{lang}]({path})" for lang, path in sorted(langs_dict.items())])
+        lang_links = " \\   ".join([f"[{lang}]({path})" for lang, path in sorted(langs_dict.items())])
         
         beecrowd_link = f"[Problema {prob_id}](https://judge.beecrowd.com/pt/problems/view/{prob_id})" if prob_id.isdigit() else "-"
         

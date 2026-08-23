@@ -1,8 +1,8 @@
-#  Beecrowd Solutions
+# Beecrowd Solutions
 
 > Repositório pessoal com soluções dos exercícios da plataforma [beecrowd](https://judge.beecrowd.com/).
 
-##  Progresso por Categoria
+## Progresso por Categoria
 
 - **Iniciante:** `2/334`
 - **Ad-Hoc:** `0/750`
@@ -14,12 +14,11 @@
 - **Geometria-Computacional:** `0/160`
 - **SQL:** `0/50`
 
-##  Tabela de Soluções
+## Tabela de Soluções
 
-| Problema | Categoria |  Linguagem | Link Beecrowd |
-|:--------:|:----------|:-----------------------|:-------------:|
-| 1000 | Iniciante | [C](1-Iniciante/1000/1000.c) \   [Java](1-Iniciante/1000/1000.java) | [Problema 1000](https://judge.beecrowd.com/pt/problems/view/1000) |
-| 1001 | Iniciante | [C](1-Iniciante/1001/1001.c) | [Problema 1001](https://judge.beecrowd.com/pt/problems/view/1001) |
+| Problema | Categoria | C | Java |
+|:--------:|:----------||:---:|:---:|
+| [1000](https://judge.beecrowd.com/pt/problems/view/1000) | Iniciante | [C](1-Iniciante/1000/1000.c) | [Java](1-Iniciante/1000/1000.java) |
+| [1001](https://judge.beecrowd.com/pt/problems/view/1001) | Iniciante | [C](1-Iniciante/1001/1001.c) |   |
 
 ---
-*README gerado automaticamente via script Python.*

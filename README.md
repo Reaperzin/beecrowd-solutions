@@ -1,25 +1,27 @@
 # 🐝 Beecrowd Solutions
 
-> Repositório contendo soluções dos problemas da plataforma [beecrowd](https://judge.beecrowd.com/).
+> Repositório pessoal com soluções dos exercícios da plataforma [beecrowd](https://judge.beecrowd.com/).
 
-## 📊 Estatísticas Gerais
+## 📊 Progresso por Categoria
 
-- **Total de Problemas Resolvidos:** `3`
+**Total Geral Resolvido:** `2 / 2564`
 
-### 💻 Linguagens
-- **C:** `2`
-- **Java:** `1`
-
-### 📁 Categorias
-- **1-Iniciante:** `3`
+- **Iniciante:** `2/334` (0.6%)
+- **Ad-Hoc:** `0/750` (0.0%)
+- **Strings:** `0/280` (0.0%)
+- **Estruturas-e-Bibliotecas:** `0/210` (0.0%)
+- **Matematica:** `0/270` (0.0%)
+- **Paradigmas:** `0/220` (0.0%)
+- **Grafos:** `0/290` (0.0%)
+- **Geometria-Computacional:** `0/160` (0.0%)
+- **SQL:** `0/50` (0.0%)
 
 ## 📝 Tabela de Soluções
 
-| ID | Categoria | Linguagem | Solução | Link Beecrowd |
-|:--:|:----------|:---------:|:-------:|:-------------:|
-| 1000 | 1-Iniciante | C | [1000.c](1-Iniciante/1000/1000.c) | [Problema 1000](https://judge.beecrowd.com/pt/problems/view/1000) |
-| 1000 | 1-Iniciante | Java | [1000.java](1-Iniciante/1000/1000.java) | [Problema 1000](https://judge.beecrowd.com/pt/problems/view/1000) |
-| 1001 | 1-Iniciante | C | [1001.c](1-Iniciante/1001/1001.c) | [Problema 1001](https://judge.beecrowd.com/pt/problems/view/1001) |
+| Problema | Categoria | Soluções por Linguagem | Link Beecrowd |
+|:--------:|:----------|:-----------------------|:-------------:|
+| 1000 | Iniciante | [C](1-Iniciante/1000/1000.c) \| [Java](1-Iniciante/1000/1000.java) | [Problema 1000](https://judge.beecrowd.com/pt/problems/view/1000) |
+| 1001 | Iniciante | [C](1-Iniciante/1001/1001.c) | [Problema 1001](https://judge.beecrowd.com/pt/problems/view/1001) |
 
 ---
 *README gerado automaticamente via script Python.*

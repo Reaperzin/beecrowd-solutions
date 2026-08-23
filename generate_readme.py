@@ -1,6 +1,20 @@
 import os
 import re
 
+# Total aproximado de exercícios existentes por categoria no Beecrowd
+# (Você pode ajustar os valores totais conforme desejar)
+CATEGORY_TOTALS = {
+    "1-Iniciante": 334,
+    "2-Ad-Hoc": 750,
+    "3-Strings": 280,
+    "4-Estruturas-e-Bibliotecas": 210,
+    "5-Matematica": 270,
+    "6-Paradigmas": 220,
+    "7-Grafos": 290,
+    "8-Geometria-Computacional": 160,
+    "9-SQL": 50
+}
+
 EXTENSIONS = {
     ".c": "C",
     ".cpp": "C++",
@@ -16,11 +30,10 @@ EXTENSIONS = {
 }
 
 def scan_solutions(base_dir="."):
-    solutions = []
+    # Estrutura: { (prob_id, category): { "Linguagem": "caminho/arquivo" } }
+    problems = {}
     
-    # Percorre todas as pastas e subpastas recursivamente
     for root, dirs, files in os.walk(base_dir):
-        # Ignora a pasta oculta do git
         if ".git" in root:
             continue
             
@@ -36,72 +49,84 @@ def scan_solutions(base_dir="."):
                 continue
             name, ext = os.path.splitext(file)
             if ext.lower() in EXTENSIONS:
-                # Tenta pegar o ID numérico pelo nome do arquivo ou pelo nome da subpasta
+                lang = EXTENSIONS[ext.lower()]
+                
+                # Pega o ID pelo nome do arquivo ou pelo nome da subpasta
                 match = re.search(r"(\d+)", file) or (re.search(r"(\d+)", parts[1]) if len(parts) > 1 else None)
                 prob_id = match.group(1) if match else name
                 
                 full_rel_path = os.path.join(rel_dir, file).replace("\\", "/")
                 
-                solutions.append({
-                    "id": prob_id,
-                    "category": category,
-                    "language": EXTENSIONS[ext.lower()],
-                    "filename": file,
-                    "rel_path": full_rel_path
-                })
-    return solutions
+                key = (prob_id, category)
+                if key not in problems:
+                    problems[key] = {}
+                problems[key][lang] = full_rel_path
+                
+    return problems
 
-def generate_readme(solutions, output_file="README.md"):
-    total = len(solutions)
-    lang_count = {}
-    cat_count = {}
-    
-    for s in solutions:
-        lang_count[s["language"]] = lang_count.get(s["language"], 0) + 1
-        cat_count[s["category"]] = cat_count.get(s["category"], 0) + 1
+def generate_readme(problems, output_file="README.md"):
+    # Contagem de problemas únicos por categoria
+    solved_by_cat = {}
+    for (prob_id, cat) in problems.keys():
+        solved_by_cat[cat] = solved_by_cat.get(cat, 0) + 1
+
+    total_unique_solved = len(problems)
+    total_beecrowd = sum(CATEGORY_TOTALS.values())
 
     content = []
     content.append("# 🐝 Beecrowd Solutions\n")
-    content.append("> Repositório contendo soluções dos problemas da plataforma [beecrowd](https://judge.beecrowd.com/).\n")
+    content.append("> Repositório pessoal com soluções dos exercícios da plataforma [beecrowd](https://judge.beecrowd.com/).\n")
     
-    content.append("## 📊 Estatísticas Gerais\n")
-    content.append(f"- **Total de Problemas Resolvidos:** `{total}`\n")
+    # Seção de Estatísticas por Tipo
+    content.append("## 📊 Progresso por Categoria\n")
+    content.append(f"**Total Geral Resolvido:** `{total_unique_solved} / {total_beecrowd}`\n")
     
-    if lang_count:
-        content.append("### 💻 Linguagens")
-        for lang, count in sorted(lang_count.items(), key=lambda x: x[1], reverse=True):
-            content.append(f"- **{lang}:** `{count}`")
-        content.append("")
+    # Ordem das categorias
+    all_categories = sorted(list(set(list(CATEGORY_TOTALS.keys()) + list(solved_by_cat.keys()))))
     
-    if cat_count:
-        content.append("### 📁 Categorias")
-        for cat in sorted(cat_count.keys()):
-            content.append(f"- **{cat}:** `{cat_count[cat]}`")
-        content.append("")
-
-    content.append("## 📝 Tabela de Soluções\n")
-    content.append("| ID | Categoria | Linguagem | Solução | Link Beecrowd |")
-    content.append("|:--:|:----------|:---------:|:-------:|:-------------:|")
+    for cat in all_categories:
+        solved = solved_by_cat.get(cat, 0)
+        total = CATEGORY_TOTALS.get(cat, "?")
+        
+        # Nome amigável removendo o prefixo numérico (ex: "1-Iniciante" -> "Iniciante")
+        cat_name = cat.split("-", 1)[1] if "-" in cat else cat
+        
+        if isinstance(total, int) and total > 0:
+            porcentagem = (solved / total) * 100
+            content.append(f"- **{cat_name}:** `{solved}/{total}` ({porcentagem:.1f}%)")
+        else:
+            content.append(f"- **{cat_name}:** `{solved}` resolvidos")
+            
+    content.append("\n## 📝 Tabela de Soluções\n")
+    content.append("| Problema | Categoria | Soluções por Linguagem | Link Beecrowd |")
+    content.append("|:--------:|:----------|:-----------------------|:-------------:|")
     
-    def sort_key(s):
+    # Ordena os problemas por ID
+    def sort_key(item):
+        prob_id, cat = item[0]
         try:
-            return (int(s["id"]), s["language"])
+            return (int(prob_id), cat)
         except ValueError:
-            return (999999, s["id"])
+            return (999999, prob_id)
 
-    for s in sorted(solutions, key=sort_key):
-        prob_id = s["id"]
+    for (prob_id, category), langs_dict in sorted(problems.items(), key=sort_key):
+        cat_name = category.split("-", 1)[1] if "-" in category else category
+        
+        # Monta os links das linguagens: [C](caminho/1000.c) | [Java](caminho/HelloWorld.java)
+        lang_links = " \\| ".join([f"[{lang}]({path})" for lang, path in sorted(langs_dict.items())])
+        
         beecrowd_link = f"[Problema {prob_id}](https://judge.beecrowd.com/pt/problems/view/{prob_id})" if prob_id.isdigit() else "-"
-        sol_link = f"[{s['filename']}]({s['rel_path']})"
-        content.append(f"| {prob_id} | {s['category']} | {s['language']} | {sol_link} | {beecrowd_link} |")
+        
+        content.append(f"| {prob_id} | {cat_name} | {lang_links} | {beecrowd_link} |")
         
     content.append("\n---")
     content.append("*README gerado automaticamente via script Python.*")
 
     with open(output_file, "w", encoding="utf-8") as f:
         f.write("\n".join(content))
-    print(f"Sucesso: README.md atualizado com {total} solucoes!")
+        
+    print(f"Sucesso: README.md atualizado com {total_unique_solved} exercicios!")
 
 if __name__ == "__main__":
-    sols = scan_solutions()
-    generate_readme(sols)
+    problems = scan_solutions()
+    generate_readme(problems)

@@ -69,10 +69,13 @@ def generate_readme(problems, used_languages, output_file="README.md"):
         solved_by_cat[cat] = solved_by_cat.get(cat, 0) + 1
 
     content = []
-    content.append("# Beecrowd Solutions\n")
-    content.append("> Repositório pessoal com soluções dos exercícios da plataforma [beecrowd](https://judge.beecrowd.com/).\n")
+    content.append("# Beecrowd Solutions")
+    content.append("")
+    content.append("> Repositório pessoal com soluções dos exercícios da plataforma [beecrowd](https://judge.beecrowd.com/).")
+    content.append("")
+    content.append("## Progresso por Categoria")
+    content.append("")
     
-    content.append("## Progresso por Categoria\n")
     all_categories = sorted(list(set(list(CATEGORY_TOTALS.keys()) + list(solved_by_cat.keys()))))
     
     for cat in all_categories:
@@ -85,13 +88,16 @@ def generate_readme(problems, used_languages, output_file="README.md"):
         else:
             content.append(f"- **{cat_name}:** `{solved}` resolvidos")
             
-    content.append("\n## Tabela de Soluções\n")
+    content.append("")
+    content.append("## Tabela de Soluções")
+    content.append("")
     
     # Se não tiver linguagens ainda, define padrão
     cols = used_languages if used_languages else ["Linguagem"]
     
+    # Cabeçalho da tabela Markdown
     header = "| Problema | Categoria | " + " | ".join(cols) + " |"
-    divider = "|:--------:|:----------|" + "|:---:" * len(cols) + "|"
+    divider = "|:--------:|:----------| " + " | ".join([":---:"] * len(cols)) + " |"
     content.append(header)
     content.append(divider)
     
@@ -108,17 +114,19 @@ def generate_readme(problems, used_languages, output_file="README.md"):
         lang_cells = []
         for lang in cols:
             if lang in langs_dict:
+                # Se preferir que mostre o nome do arquivo ao invés da linguagem, mude para: os.path.basename(langs_dict[lang])
                 lang_cells.append(f"[{lang}]({langs_dict[lang]})")
             else:
-                lang_cells.append(" ")
+                lang_cells.append("-")
                 
         row = f"| [{prob_id}](https://judge.beecrowd.com/pt/problems/view/{prob_id}) | {cat_name} | " + " | ".join(lang_cells) + " |"
         content.append(row)
         
-    content.append("\n---")
+    content.append("")
+    content.append("---")
 
     with open(output_file, "w", encoding="utf-8") as f:
-        f.write("\n".join(content))
+        f.write("\n".join(content) + "\n")
         
     print(f"Sucesso: README.md atualizado com {len(problems)} exercicios!")
 
